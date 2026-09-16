@@ -58,6 +58,8 @@ Do not copy Java-style class hierarchies. Propose a plan before editing.
 
 ## Scope and limits
 
+The skill also checks unused symbols and redundant code inside active methods, including dead stores, unused computations, and unreachable branches. Analysis is read-only; cleanup requires a request to change code. Preserve side effects, dynamic entry points, and public contracts; uncertain candidates remain for review. Simple cleanup does not require a design pattern.
+
 The workflow is language-agnostic. The bundled executable examples currently use Java; Go, Python, and TypeScript examples are not yet included.
 
 The [selection guide](skills/design-patterns-refactor/references/pattern-selection.md) covers the 23 GoF patterns and selected architectural approaches. This is guidance, not a claim that all patterns have executable examples. Three examples are provided: pricing strategies, shipping adapters, and export decorators. See [example documentation](skills/design-patterns-refactor/assets/java-examples/README.md).
