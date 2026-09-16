@@ -1,8 +1,34 @@
 # Design Patterns Refactor
 
-面向业务代码重构的 **Codex Skill + 可运行案例**。从代码中的职责、变化点和兼容要求出发，选择合适的模式，给出方案或按请求实施重构。
+[中文](README.md) | [English](README.en.md)
+
+**让 AI 根据真实代码选择重构方案，而不是为了设计模式而设计。**
+
+面向业务代码重构的 Codex Skill：追踪调用链、比较直接简化与模式方案，在保留接口、事务与副作用语义的前提下，先分析或按请求实施修改。
+
+- **先找证据**：给出实际文件位置、问题、收益和代价。
+- **避免过度设计**：允许结论为“不需要设计模式”。
+- **关注兼容与验证**：区分结构重构与业务修复，如实报告未验证部分。
 
 支持不同业务领域和语言，当前可执行案例使用 Java。它不要求每个项目都使用设计模式，也不会仅凭复杂分支就自动改造全仓。
+
+## 快速开始
+
+```bash
+git clone https://github.com/mengxiangsama/design-patterns-refactor.git
+cd design-patterns-refactor
+bash scripts/install.sh
+```
+
+在目标项目中使用：
+
+```text
+$design-patterns-refactor
+分析当前项目的高价值重构点，给出代码证据和优先级。
+遵循项目语言的惯用写法，不为套模式增加抽象。先不要修改代码。
+```
+
+[安装选项](#安装) · [使用方式](#使用) · [参与贡献](CONTRIBUTING.md) · [变更记录](CHANGELOG.md)
 
 ## 能做什么
 
@@ -36,7 +62,7 @@ bash scripts/install.sh /path/to/your-project/.agents/skills
 
 这是独立 Skill 目录的安装方式，路径和发现机制参见 [OpenAI 官方说明](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills)。安装后在 Codex 中查看 Skill 列表；没有显示时重启客户端。
 
-仓库发布后，也可以让内置安装器按仓库与路径安装：
+也可以让内置安装器按仓库与路径安装：
 
 ```text
 $skill-installer
@@ -96,6 +122,20 @@ $design-patterns-refactor
 
 案例位于 [java-examples](skills/design-patterns-refactor/assets/java-examples/README.md)，随 Skill 一起安装。它们不依赖原来的 design Demo，也不连接真实物流或支付系统。
 
+## 常见问题
+
+**Go、Python 或 TypeScript 项目能用吗？**
+
+可以。工作流不限定语言，应使用目标语言原生的接口、函数、组合和测试工具，而不是照搬 Java 的类层次。当前附带的可运行案例仅为 Java，其他语言的案例与实际使用反馈欢迎贡献。
+
+**只想分析，会自动改代码吗？**
+
+技能要求分析请求保持只读，明确要求实施时才修改。它是给编码助手的工作指引，不是权限隔离机制；仍需结合宿主环境的权限设置。
+
+**用了就一定更快、更安全吗？**
+
+不会作这样的保证。设计模式不等于性能优化；实际收益需要测试和测量，生成的方案仍需评审。
+
 ## 开发与验证
 
 ```bash
@@ -125,6 +165,8 @@ evals/                     模型行为评估场景
 ```
 
 ## 贡献与许可
+
+欢迎改进文档、提交脱敏使用反馈、完善回归测试或增加其他语言的案例。请先阅读 [贡献指南](CONTRIBUTING.md)，通过 [Issues](https://github.com/mengxiangsama/design-patterns-refactor/issues) 讨论较大的改动，再提交 PR。
 
 新增案例时提供问题证据、简化方案、选型理由、Before/After 和行为测试。不要为了凑齐模式数量增加没有实际变化点的示例。修复行为与结构重构应分别说明。
 
