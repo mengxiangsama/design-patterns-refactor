@@ -1,4 +1,4 @@
 interface:
   display_name: "设计模式重构"
-  short_description: "基于真实代码问题选择合理模式，生成兼容的重构方案、实现与回归测试"
-  default_prompt: "使用 $design-patterns-refactor 分析当前项目的职责与变化点，比较直接简化与设计模式方案；按我的请求输出建议或实施重构，并验证行为兼容性。"
+  short_description: "基于代码证据重构与清理，支持微服务边界、分布式一致性和消息拓扑设计"
+  default_prompt: "使用 $design-patterns-refactor 分析指定项目或微服务的职责、契约与变化点，按任务比较直接简化、设计模式或跨服务方案；按我的请求分析或实施，并验证兼容性及失败恢复。"
