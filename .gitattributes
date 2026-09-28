@@ -1,0 +1,3 @@
+# Stable installed contents and executable shell scripts on every platform.
+* text=auto eol=lf
+*.sh text eol=lf

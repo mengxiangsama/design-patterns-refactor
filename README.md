@@ -124,8 +124,18 @@ python3 scripts/update.py
 
 - `--check` 只检查版本，不写文件；正式更新前将已安装内容与仓库历史逐文件比较。
 - 仅更新可识别且未经自定义修改的副本；新增、修改、缺失文件或符号链接会阻止更新，没有强制覆盖选项。比较时忽略构建/缓存产物（`target`、`__pycache__`、`.DS_Store`），原副本仍完整备份。
-- 原目录备份到 skills 父目录旁的 `skill-backups/`，不放进 skills 扫描目录。激活新目录失败时尝试恢复原目录，并报告错误。
+- 原目录备份到 skills 父目录旁的 `skill-backups/`，不放进 skills 扫描目录。切换目录失败或按 Ctrl+C 时尝试恢复；强制结束进程后，检查、更新和安装命令会识别未完成记录并提示恢复。
 - 默认检查最近 100 次涉及 Skill 的提交；旧版本可用 `--from-ref <commit-or-tag>` 指定基线，仍须内容完全匹配。未知版本需先人工比较。
+
+**更新中断、安装目录不见了？** 保留备份和隐藏的更新记录，在仓库目录执行：
+
+```bash
+python3 scripts/update.py --recover
+python3 scripts/update.py --check
+python3 scripts/update.py
+```
+
+自定义安装位置时，三条命令均加同一个 skills 父目录；Windows 可将 `python3` 换成 `py -3`。`--recover` 会校验记录和文件：旧目录已移走时还原旧版；新版已完整启用时完成收尾，不回滚新版。恢复后再检查、更新即可。文件被手工修改或记录异常时会拒绝覆盖，需人工比较；旧版更新器没有恢复记录的备份也需人工处理。`.update.lock` 锁文件留存是正常现象，锁由操作系统管理，进程退出后会释放，无需删除。
 
 通过 skills CLI 安装的版本，使用其更新命令 `npx skills update design-patterns-refactor`，不要混用本仓库的副本更新器。更新前自行保留本地自定义内容；本仓库的保护规则不等于第三方 CLI 的保证。
 
@@ -160,7 +170,7 @@ mvn -B -f skills/design-patterns-refactor/assets/java-examples/pom.xml verify
 
 原生 Windows 的虚拟环境 Python 路径为 `.venv\Scripts\python.exe`。Java 案例以 Java 8 字节码为目标，建议用 JDK 17+、Maven 3.8+ 构建；这些不是使用 Skill 的依赖。
 
-CI 检查元数据/本地链接、安装更新、Java/Python 案例及评估夹具基线。订单夹具测试**复现原始故障**，不代表问题已修复；模型行为须单独评估，真实 MQ/生产环境未由这些测试验证。
+CI 在 Ubuntu、macOS、Windows 上检查元数据/本地链接、安装更新、Python 案例及评估夹具基线；Java 案例另用 Ubuntu + JDK 17/21 验证。安装更新测试覆盖 Ctrl+C、三个目录切换阶段的强制退出，以及 `core.autocrlf=true` 的克隆安装；`.gitattributes` 固定文本和 Shell 脚本为 LF。Windows 测试使用 Git Bash，无符号链接权限时仅跳过相应符号链接用例。订单夹具测试**复现原始故障**，不代表问题已修复；模型行为须单独评估，真实 MQ/生产环境未由这些测试验证。
 
 ## 贡献与许可
 

@@ -128,8 +128,18 @@ The updater requires Python 3.9+ and Git, with no third-party Python packages. F
 
 - `--check` identifies versions without writing files; an actual update compares installed files against repository history.
 - Only recognized, unmodified copies can be updated. Added, edited, missing files or symlinks block updates; there is no force-overwrite option. Comparisons ignore generated `target`, `__pycache__`, and `.DS_Store` entries, but the original copy is backed up in full.
-- The old directory is backed up under `skill-backups/` alongside the skills directory, outside skill scanning. If activation fails, restoration is attempted and the error is reported.
+- The old directory is backed up under `skill-backups/` alongside the skills directory, outside skill scanning. Directory-switch failures and Ctrl+C trigger recovery attempts. After a hard process exit, check, update, and install commands detect the unfinished journal and request recovery.
 - The default search covers the latest 100 commits touching the skill. Use `--from-ref <commit-or-tag>` for an older baseline; contents must still match exactly. Unknown versions require manual comparison.
+
+**Update interrupted or installation directory missing?** Keep the backup and hidden update journal. From the repository, run:
+
+```bash
+python3 scripts/update.py --recover
+python3 scripts/update.py --check
+python3 scripts/update.py
+```
+
+Append the same skills parent directory to all three commands for a custom installation. On Windows, substitute `py -3` for `python3` if needed. Recovery validates the journal and file fingerprints: it restores the old copy if it was moved away, or finishes cleanup if the new copy is already fully active without rolling it back. Then check and update again. Manually changed files or invalid records are not overwritten and require inspection; backups from older updaters without a journal also require manual handling. A retained `.update.lock` file is normal: the OS releases the lock when the process exits, so do not delete the file.
 
 For CLI-managed installations, use `npx skills update design-patterns-refactor`, not this repository's copy updater. Preserve customizations before using third-party update tools; their safety behavior is separate from this updater's guarantees.
 
@@ -164,7 +174,7 @@ mvn -B -f skills/design-patterns-refactor/assets/java-examples/pom.xml verify
 
 On native Windows, the virtual environment Python is `.venv\Scripts\python.exe`. Java examples target Java 8 bytecode; JDK 17+ and Maven 3.8+ are recommended for building. These are not skill-usage dependencies.
 
-CI checks metadata/local links, install/update behavior, Java/Python examples, and evaluation fixture baselines. Order-delivery baseline tests deliberately **reproduce original failures**, not a completed fix. Model behavior needs separate evaluation; these tests do not validate a real MQ cluster or production environment.
+CI checks metadata/local links, install/update behavior, Python examples, and evaluation fixture baselines on Ubuntu, macOS, and Windows. Java examples run separately on Ubuntu with JDK 17/21. Installation tests cover Ctrl+C, hard exits at three directory-switch stages, and a fresh `core.autocrlf=true` clone; `.gitattributes` pins text files and shell scripts to LF. Windows tests use Git Bash and skip only the relevant symlink cases if the account lacks symlink privileges. Order-delivery baseline tests deliberately **reproduce original failures**, not a completed fix. Model behavior needs separate evaluation; these tests do not validate a real MQ cluster or production environment.
 
 ## Contributing and license
 

@@ -15,9 +15,15 @@ repo_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 source_dir="$repo_dir/skills/design-patterns-refactor"
 destination_root="${1:-${HOME}/.agents/skills}"
 target_dir="$destination_root/design-patterns-refactor"
+pending_update="$destination_root/.design-patterns-refactor.update.json"
 
 if [[ ! -f "$source_dir/SKILL.md" ]]; then
   printf '%s\n' 'Skill source is incomplete.' >&2
+  exit 1
+fi
+if [[ -e "$pending_update" || -L "$pending_update" ]]; then
+  printf '%s\n' 'Interrupted update detected. Recover before reinstalling:' \
+    "python3 scripts/update.py --recover \"$destination_root\"" >&2
   exit 1
 fi
 if [[ -e "$target_dir" || -L "$target_dir" ]]; then

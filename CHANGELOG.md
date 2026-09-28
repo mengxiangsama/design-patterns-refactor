@@ -24,5 +24,7 @@ This file records repository changes. `Unreleased` is not a published release.
 
 - Added a Git-history-based copy updater with read-only checks, local-change refusal, backups outside skill scanning, and restoration on activation failure.
 - Initial Bash installation still refuses overwrites and needs no Python; the updater requires Python 3.9+.
+- Added a persistent recovery journal, `--recover`, Ctrl+C restoration, and OS-managed update/recovery locks that release on process exit. Recovery validates files and refuses to overwrite manual changes; installation also refuses an unfinished update.
+- Fixed Windows CRLF checkout failures with `.gitattributes`; added fresh-clone and interruption regression tests, Git Bash test discovery, and Ubuntu/macOS/Windows validation jobs.
 
 No cross-client compatibility certification or production verification is claimed.

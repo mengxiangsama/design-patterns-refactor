@@ -1,10 +1,14 @@
 import importlib.util
+import json
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
+
+from support import symlink_or_skip
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("skill_update", ROOT / "scripts" / "update.py")
@@ -76,13 +80,13 @@ class UpdateTest(unittest.TestCase):
     def test_symlink_install_is_rejected(self):
         moved = self.destination / "actual-copy"
         self.target.rename(moved)
-        self.target.symlink_to(moved, target_is_directory=True)
+        symlink_or_skip(self, self.target, moved)
         with self.assertRaises(ValueError):
             updater.update(self.root, self.destination)
         self.assertEqual("old skill", (moved / "SKILL.md").read_text())
 
     def test_nested_symlink_is_rejected(self):
-        (self.target / "outside").symlink_to(self.source, target_is_directory=True)
+        symlink_or_skip(self, self.target / "outside", self.source)
         with self.assertRaises(ValueError):
             updater.update(self.root, self.destination)
 
@@ -108,7 +112,9 @@ class UpdateTest(unittest.TestCase):
             with self.assertRaises(OSError):
                 updater.update(self.root, self.destination)
         self.assertEqual("old skill", (self.target / "SKILL.md").read_text())
-        self.assertFalse((self.destination / ("." + updater.NAME + ".update.lock")).exists())
+        self.assertFalse(updater.pending_path(self.destination).exists())
+        with updater.installation_lock(self.destination):
+            pass
 
     def test_generated_files_are_backed_up_but_not_reinstalled(self):
         generated = self.target / "assets" / "target"
@@ -130,19 +136,121 @@ class UpdateTest(unittest.TestCase):
         self.assertEqual("old skill", (self.target / "SKILL.md").read_text())
 
     def test_existing_lock_prevents_overlapping_update(self):
-        lock = self.destination / ("." + updater.NAME + ".update.lock")
-        lock.write_text("another updater")
-        with self.assertRaises(FileExistsError):
-            updater.update(self.root, self.destination)
-        self.assertEqual("another updater", lock.read_text())
+        with updater.installation_lock(self.destination):
+            with self.assertRaises(FileExistsError):
+                updater.update(self.root, self.destination)
+            with self.assertRaises(FileExistsError):
+                updater.recover(self.destination)
         self.assertEqual("old skill", (self.target / "SKILL.md").read_text())
 
     def test_backup_symlink_is_rejected(self):
         backup_parent = self.destination.parent / "skill-backups"
-        backup_parent.symlink_to(self.destination, target_is_directory=True)
+        symlink_or_skip(self, backup_parent, self.destination)
         with self.assertRaises(ValueError):
             updater.update(self.root, self.destination)
         self.assertEqual("old skill", (self.target / "SKILL.md").read_text())
+
+    def test_ctrl_c_during_activation_restores_original(self):
+        original_rename = Path.rename
+
+        def interrupt_activation(path, destination):
+            if path.name == "incoming":
+                raise KeyboardInterrupt("simulated Ctrl+C")
+            return original_rename(path, destination)
+
+        with patch.object(Path, "rename", interrupt_activation):
+            with self.assertRaises(KeyboardInterrupt):
+                updater.update(self.root, self.destination)
+        self.assertEqual("old skill", (self.target / "SKILL.md").read_text())
+        self.assertFalse(updater.pending_path(self.destination).exists())
+        updater.update(self.root, self.destination)
+        self.assertEqual(updater.snapshot(self.source), updater.snapshot(self.target))
+
+    def hard_exit_at(self, phase):
+        code = """
+import os, sys
+from pathlib import Path
+sys.path.insert(0, sys.argv[1])
+import update
+root, destination, phase = Path(sys.argv[2]), Path(sys.argv[3]), sys.argv[4]
+original = Path.rename
+def abrupt_exit(path, target):
+    if phase == 'prepared' and path.name == update.NAME:
+        os._exit(71)
+    result = original(path, target)
+    if phase == 'backed_up' and path.name == update.NAME:
+        os._exit(72)
+    if phase == 'activated' and path.name == 'incoming':
+        os._exit(73)
+    return result
+Path.rename = abrupt_exit
+update.update(root, destination)
+"""
+        result = subprocess.run([sys.executable, "-B", "-c", code, str(ROOT / "scripts"),
+                                 str(self.root), str(self.destination), phase],
+                                capture_output=True, text=True)
+        self.assertEqual({"prepared": 71, "backed_up": 72, "activated": 73}[phase],
+                         result.returncode, result.stderr)
+        self.assertTrue(updater.pending_path(self.destination).exists())
+
+    def test_hard_exit_before_move_is_recoverable(self):
+        self.hard_exit_at("prepared")
+        updater.recover(self.destination)
+        self.assertEqual("old skill", (self.target / "SKILL.md").read_text())
+        self.assertFalse(updater.pending_path(self.destination).exists())
+
+    def test_hard_exit_after_backup_is_detected_and_cli_recovers(self):
+        self.hard_exit_at("backed_up")
+        self.assertFalse(self.target.exists())
+        journal = updater.pending_path(self.destination).read_bytes()
+        with self.assertRaisesRegex(ValueError, "--recover"):
+            updater.update(self.root, self.destination, check=True)
+        self.assertEqual(journal, updater.pending_path(self.destination).read_bytes())
+        self.assertFalse(self.target.exists())
+        result = subprocess.run([sys.executable, "-B", str(ROOT / "scripts" / "update.py"),
+                                 "--recover", str(self.destination)], text=True, capture_output=True)
+        self.assertEqual(0, result.returncode, result.stderr)
+        self.assertEqual("old skill", (self.target / "SKILL.md").read_text())
+        updater.recover(self.destination)  # Repeating recovery is harmless.
+        updater.update(self.root, self.destination)
+        self.assertEqual(updater.snapshot(self.source), updater.snapshot(self.target))
+
+    def test_hard_exit_after_activation_finishes_without_rollback(self):
+        self.hard_exit_at("activated")
+        before = updater.snapshot(self.target)
+        updater.recover(self.destination)
+        self.assertEqual(before, updater.snapshot(self.target))
+        self.assertEqual(updater.snapshot(self.source), before)
+        self.assertFalse(updater.pending_path(self.destination).exists())
+
+    def test_recovery_does_not_overwrite_recreated_target(self):
+        self.hard_exit_at("backed_up")
+        self.target.mkdir()
+        (self.target / "SKILL.md").write_text("my replacement")
+        with self.assertRaisesRegex(ValueError, "Nothing overwritten"):
+            updater.recover(self.destination)
+        self.assertEqual("my replacement", (self.target / "SKILL.md").read_text())
+        self.assertTrue(updater.pending_path(self.destination).exists())
+
+    def test_recovery_refuses_modified_backup(self):
+        self.hard_exit_at("backed_up")
+        record = json.loads(updater.pending_path(self.destination).read_text())
+        backup = self.destination.parent / "skill-backups" / record["backup_dir"] / updater.NAME
+        (backup / "SKILL.md").write_text("custom backup")
+        with self.assertRaisesRegex(ValueError, "Nothing overwritten"):
+            updater.recover(self.destination)
+        self.assertFalse(self.target.exists())
+        self.assertEqual("custom backup", (backup / "SKILL.md").read_text())
+
+    def test_recovery_refuses_path_traversal_in_journal(self):
+        self.hard_exit_at("backed_up")
+        journal = updater.pending_path(self.destination)
+        record = json.loads(journal.read_text())
+        record["backup_dir"] = updater.NAME + "-x/../../outside"
+        journal.write_text(json.dumps(record))
+        with self.assertRaisesRegex(ValueError, "Invalid recovery backup"):
+            updater.recover(self.destination)
+        self.assertFalse(self.target.exists())
 
 
 if __name__ == "__main__":
