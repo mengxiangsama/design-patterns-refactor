@@ -19,6 +19,7 @@ This file records repository changes. `Unreleased` is not a published release.
 - Added a standard-library Python function-composition example and contract tests.
 - Added isolated evaluation tasks for Python analysis/cleanup, durable event delivery, consumer idempotency, and message topology. Inputs are separated from scoring guidance.
 - Added fixture baseline checks to CI; these do not establish model quality or production correctness.
+- Explicitly close reopened SQLite connections in baseline tests so Windows can remove temporary databases; the original-failure assertions are unchanged.
 
 ### Installation
 
@@ -26,5 +27,6 @@ This file records repository changes. `Unreleased` is not a published release.
 - Initial Bash installation still refuses overwrites and needs no Python; the updater requires Python 3.9+.
 - Added a persistent recovery journal, `--recover`, Ctrl+C restoration, and OS-managed update/recovery locks that release on process exit. Recovery validates files and refuses to overwrite manual changes; installation also refuses an unfinished update.
 - Fixed Windows CRLF checkout failures with `.gitattributes`; added fresh-clone and interruption regression tests, Git Bash test discovery, and Ubuntu/macOS/Windows validation jobs.
+- Limited LF enforcement to shell scripts and regression-tested existing CRLF checkout upgrades, preserving skill-file fingerprint compatibility.
 
 No cross-client compatibility certification or production verification is claimed.

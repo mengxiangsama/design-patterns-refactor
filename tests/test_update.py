@@ -100,6 +100,33 @@ class UpdateTest(unittest.TestCase):
         updater.update(self.root, self.destination, from_ref=self.baseline)
         self.assertIsNone(updater.update(self.root, self.destination))
 
+    def test_existing_crlf_checkout_accepts_line_ending_fix(self):
+        (self.source / "SKILL.md").write_bytes(b"skill with a newline\n")
+        self.commit()
+        checkout = Path(self.temp.name) / "windows checkout"
+        subprocess.run(["git", "clone", "--quiet", "--no-hardlinks", "--config",
+                        "core.autocrlf=true", str(self.root), str(checkout)],
+                       check=True, capture_output=True)
+        copied_parent = Path(self.temp.name) / "windows skills"
+        copied_parent.mkdir()
+        shutil.copytree(checkout / updater.PACKAGE, copied_parent / updater.NAME)
+        self.assertIn(b"\r\n", (checkout / updater.PACKAGE / "SKILL.md").read_bytes())
+
+        # Pulling attributes alone does not rewrite existing working-tree files.
+        (self.root / ".gitattributes").write_bytes((ROOT / ".gitattributes").read_bytes())
+        self.commit()
+        subprocess.run(["git", "-C", str(checkout), "pull", "--ff-only"],
+                       check=True, capture_output=True)
+        self.assertIsNone(updater.update(checkout, copied_parent))
+
+        (self.source / "SKILL.md").write_bytes(b"new version with a newline\n")
+        self.commit()
+        subprocess.run(["git", "-C", str(checkout), "pull", "--ff-only"],
+                       check=True, capture_output=True)
+        updater.update(checkout, copied_parent)
+        self.assertEqual(updater.snapshot(checkout / updater.PACKAGE),
+                         updater.snapshot(copied_parent / updater.NAME))
+
     def test_failed_activation_restores_original(self):
         original_rename = Path.rename
 

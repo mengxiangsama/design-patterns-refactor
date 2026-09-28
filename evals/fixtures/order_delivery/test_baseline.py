@@ -1,4 +1,5 @@
 """Reproduce the ORIGINAL failure windows, not acceptance tests for a fix."""
+from contextlib import closing
 from pathlib import Path
 import sqlite3
 import tempfile
@@ -22,7 +23,7 @@ class OriginalBehaviorTest(unittest.TestCase):
 
         with self.assertRaises(ConnectionError):
             place_order(self.db, "order-1", publish)
-        with sqlite3.connect(self.path) as reopened:
+        with closing(sqlite3.connect(self.path)) as reopened:
             self.assertEqual([("order-1",)], reopened.execute("SELECT id FROM orders").fetchall())
             tables = {row[0] for row in reopened.execute("SELECT name FROM sqlite_master WHERE type='table'")}
             self.assertEqual({"orders", "balances", "processed"}, tables)
@@ -33,7 +34,7 @@ class OriginalBehaviorTest(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             credit(self.db, "event-1", 10, crash)
-        with sqlite3.connect(self.path) as reopened:
+        with closing(sqlite3.connect(self.path)) as reopened:
             credit(reopened, "event-1", 10)
             self.assertEqual(20, reopened.execute("SELECT amount FROM balances").fetchone()[0])
 

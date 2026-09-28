@@ -170,7 +170,7 @@ mvn -B -f skills/design-patterns-refactor/assets/java-examples/pom.xml verify
 
 原生 Windows 的虚拟环境 Python 路径为 `.venv\Scripts\python.exe`。Java 案例以 Java 8 字节码为目标，建议用 JDK 17+、Maven 3.8+ 构建；这些不是使用 Skill 的依赖。
 
-CI 在 Ubuntu、macOS、Windows 上检查元数据/本地链接、安装更新、Python 案例及评估夹具基线；Java 案例另用 Ubuntu + JDK 17/21 验证。安装更新测试覆盖 Ctrl+C、三个目录切换阶段的强制退出，以及 `core.autocrlf=true` 的克隆安装；`.gitattributes` 固定文本和 Shell 脚本为 LF。Windows 测试使用 Git Bash，无符号链接权限时仅跳过相应符号链接用例。订单夹具测试**复现原始故障**，不代表问题已修复；模型行为须单独评估，真实 MQ/生产环境未由这些测试验证。
+CI 在 Ubuntu、macOS、Windows 上检查元数据/本地链接、安装更新、Python 案例及评估夹具基线；Java 案例另用 Ubuntu + JDK 17/21 验证。安装更新测试覆盖 Ctrl+C、三个目录切换阶段的强制退出，以及 `core.autocrlf=true` 的新克隆安装和已有克隆升级；`.gitattributes` 仅将 Shell 脚本固定为 LF，避免改变已安装 Skill 的文件比较规则。Windows 测试使用 Git Bash，无符号链接权限时仅跳过相应符号链接用例。订单夹具测试**复现原始故障**，不代表问题已修复；模型行为须单独评估，真实 MQ/生产环境未由这些测试验证。
 
 ## 贡献与许可
 

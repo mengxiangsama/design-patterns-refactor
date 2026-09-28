@@ -93,7 +93,7 @@ class InstallTest(unittest.TestCase):
             result = subprocess.run([bash_executable(), script.as_posix(), installed.as_posix()],
                                     text=True, capture_output=True)
             self.assertEqual(0, result.returncode, result.stderr)
-            self.assertEqual(entry.read_bytes(),
+            self.assertEqual((checkout / "skills" / "design-patterns-refactor" / "SKILL.md").read_bytes(),
                              (installed / "design-patterns-refactor" / "SKILL.md").read_bytes())
 
 

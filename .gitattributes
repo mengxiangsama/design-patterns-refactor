@@ -1,3 +1,2 @@
-# Stable installed contents and executable shell scripts on every platform.
-* text=auto eol=lf
+# Bash needs LF even with core.autocrlf=true. Leave existing skill-file bytes alone.
 *.sh text eol=lf
