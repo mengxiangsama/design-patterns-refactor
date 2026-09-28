@@ -4,7 +4,9 @@
 
 **Help AI choose refactorings from real code—not force design patterns onto it.**
 
-A Codex skill for tracing responsibilities and change points, comparing direct simplification with pattern-based alternatives, and planning or implementing scoped refactorings with compatibility checks.
+A language-agnostic Codex skill for refactoring Java/Spring Boot, Go, Python, TypeScript, and other codebases. Trace real call paths, compare direct simplification with design patterns, and plan or implement scoped changes while preserving behavior.
+
+Use it for legacy code refactoring, design pattern selection, dead code cleanup, and microservice boundaries or eventual consistency. Runnable before-and-after examples for Strategy, Adapter, and Decorator are currently in Java; for other languages, follow the target project's idioms. References cover Outbox, Saga, idempotency, and message queue topology when relevant.
 
 - Evidence first: cite code locations and explain costs and benefits.
 - No unnecessary abstractions: “no pattern needed” is a valid conclusion.
