@@ -1,201 +1,169 @@
-# Design Patterns Refactor
+# Design Patterns Refactor · 跨语言 AI 代码重构 Skill
 
 [中文](README.md) | [English](README.en.md)
 
+[![CI](https://github.com/mengxiangsama/design-patterns-refactor/actions/workflows/ci.yml/badge.svg)](https://github.com/mengxiangsama/design-patterns-refactor/actions/workflows/ci.yml) · [MIT License](LICENSE)
+
 **让 AI 根据真实代码选择重构方案，而不是为了设计模式而设计。**
 
-面向多语言项目的 Codex Skill：适用于 Java/Spring Boot、Go、Python、TypeScript 等代码库。它追踪实际调用链，比较直接简化与设计模式方案，在保留接口、事务与副作用语义的前提下，先分析或按请求实施修改。
+面向 Codex 的跨语言 Skill，用于遗留代码重构（legacy code refactoring）、设计模式选型、无用代码清理，以及微服务边界与最终一致性评估。适用于 Java/Spring Boot、Go、Python、TypeScript 等项目，优先采用目标语言的函数、接口与组合方式。
 
-适用于遗留代码重构、设计模式选型、无用代码清理，以及微服务边界与最终一致性评估。附带策略模式、适配器模式、装饰器模式的可运行 Java 重构案例；其他语言按目标项目的惯用写法分析和实施。服务边界、Outbox、Saga、幂等与消息队列资料按需读取。
+- **先找证据**：追踪调用链，给出代码位置、问题和取舍。
+- **允许保持简单**：稳定分支不必套模式；只想分析时不改代码。
+- **保留行为**：保护异常、金额、事务、顺序和外部副作用，报告验证边界。
 
-- **先找证据**：给出实际文件位置、问题、收益和代价。
-- **避免过度设计**：允许结论为“不需要设计模式”。
-- **关注兼容与验证**：区分结构重构与业务修复，如实报告未验证部分。
+当前提供 **Java 和 Python 的可运行对照案例**，不代表所有语言、模式或模型都经过验证。这是编码助手的工作指引，不是独立运行的重构工具。
 
-支持不同业务领域和语言，当前可执行案例使用 Java。它不要求每个项目都使用设计模式，也不会仅凭复杂分支就自动改造全仓。
+[快速开始](#快速开始) · [使用场景](#使用场景) · [实际案例](#实际案例) · [安装与更新](#安装与更新) · [常见问题](#常见问题)
 
 ## 快速开始
 
+在终端执行，默认安装到 `~/.agents/skills/design-patterns-refactor`：
+
 ```bash
 git clone https://github.com/mengxiangsama/design-patterns-refactor.git
 cd design-patterns-refactor
 bash scripts/install.sh
 ```
 
-在目标项目中使用：
+需要 Git、Bash 和 tar；仅使用 Skill 不需要 Java、Maven 或 Python。Windows 可用 Git Bash 或 WSL，但应安装在实际运行编码助手的环境中。
+
+然后在 Codex 中打开**你要分析的项目**，发送：
 
 ```text
 $design-patterns-refactor
-分析当前项目的高价值重构点，给出代码证据和优先级。
-遵循项目语言的惯用写法，不为套模式增加抽象。先不要修改代码。
+分析当前模块的高价值重构点，比较直接简化与设计模式方案。
+给出代码证据、收益和代价，遵循项目语言的惯用写法。先不要修改代码。
 ```
 
-[安装选项](#安装) · [使用方式](#使用) · [参与贡献](CONTRIBUTING.md) · [变更记录](CHANGELOG.md)
+## 使用场景
 
-## 能做什么
+**Python / Go / TypeScript：不照搬 Java 类层次**
 
-- 分析实际调用链，区分业务缺陷、维护成本与性能问题。
-- 比较直接简化与模式方案，说明采用或放弃理由。
-- 按请求生成重构前后案例，或在目标项目中实施最小范围修改。
-- 保留已有接口、异常、执行顺序、金额与外部副作用语义。
-- 执行相关测试；报告未验证部分和依赖限制。
-- 建立现有行为基线，按需隔离网络、时间与数据库依赖，明确模拟测试和集成测试的边界。
-- 渐进迁移错误契约和事件，保留失败时机、提交顺序与恢复语义。
-- 检查与按需清理无用代码，包括在用方法内的无效赋值、无用计算和冗余判断；保留副作用及动态入口，疑似项只报告。
-
-仅分析时不改代码；明确要求实现时执行修改。Skill 不自动上传目标项目的代码，不内置外部 API 调用；实际代码访问与模型处理由你使用的宿主环境决定。
-
-## 跨微服务能力
-
-除单服务重构外，支持按需分析或实施：
-
-- 服务边界评估：拆分、合并、数据归属与渐进迁移。
-- 分布式事务：根据业务约束比较本地事务、Outbox、Saga、TCC 等方案。
-- 最终一致性：可靠事件、幂等、重试、对账、补偿及故障恢复验证。
-- 消息队列拓扑：路由、消费组、顺序、重试、死信与重放路径。
-
-专项参考仅在对应任务中读取。请指定可访问仓库、参与服务及业务约束；方案设计、实现、故障验证和部署状态分别报告。此范围不包含 Kubernetes、网关、监控配置或未提供仓库的隐藏依赖推断。
-
-## 安装
-
-只使用 Skill 不需要 Java、Maven 或 Python 依赖。以下安装脚本需要 Bash 和 tar（macOS/Linux；Windows 可用 Git Bash 或 WSL）。
-
-```bash
-git clone https://github.com/mengxiangsama/design-patterns-refactor.git
-cd design-patterns-refactor
-bash scripts/install.sh
+```text
+$design-patterns-refactor
+分析这个 Python 导出模块，优先考虑函数和组合。
+保留迭代求值顺序、异常传播和输出格式。先给方案，不改代码。
 ```
 
-默认安装到 `~/.agents/skills/design-patterns-refactor`。若已存在同名目录，脚本拒绝覆盖。
+**无用代码：检查仍在使用的方法内部**
 
-项目级安装，把下方路径替换为你实际项目的路径：
+```text
+$design-patterns-refactor
+清理当前订单模块已确认无用的代码，包括无效赋值和冗余判断。
+保留有副作用的调用、动态入口和对外契约，直接修改并运行相关测试。
+```
+
+**适配器重构：统一外部接入，保留契约**
+
+```text
+$design-patterns-refactor
+重构第三方物流接入，统一内部接口。
+保留错误映射、单位换算和调用次数，直接修改相关代码并运行回归测试。
+```
+
+**跨微服务：边界、分布式事务与消息可靠性**
+
+```text
+$design-patterns-refactor
+评估订单服务与库存服务的边界和消息一致性。
+检查业务提交、投递、幂等、重试与补偿，比较本地事务、Outbox 或 Saga。
+基于我提供的仓库给方案和验证计划，先不修改、不部署。
+```
+
+跨服务任务按需覆盖拆分/合并、数据归属、Outbox/Saga/TCC、对账补偿，以及消费组、顺序、死信和重放。请指定可访问仓库、参与服务与业务约束；不包含 Kubernetes、网关或监控平台运维，也不推断隐藏仓库的实现。
+
+## 实际案例
+
+导出需要支持“原文、压缩、编码、压缩后编码”四种组合。这里既有 Java 装饰器，也有 Python 函数组合，不要求不同语言使用相同结构。
+
+| 案例 | 重构选择 | 已提供的测试 |
+| --- | --- | --- |
+| [Java 会员计价](skills/design-patterns-refactor/assets/java-examples/src/main/java/examples/PricingCase.java) | 独立规则 → 策略与注册表 | 金额精度、边界输入、重复注册 |
+| [Java 物流接入](skills/design-patterns-refactor/assets/java-examples/src/main/java/examples/ShippingCase.java) | 供应商接口 → 适配器 | 单位、错误映射、副作用调用次数 |
+| [Java 导出](skills/design-patterns-refactor/assets/java-examples/src/main/java/examples/ExportCase.java) | 可选处理 → 装饰器 | 组合顺序、字节一致与解码 |
+| [Python 导出](skills/design-patterns-refactor/assets/python-examples/README.md) | 可选处理 → 普通函数序列 | 四种组合、单次迭代、异常与执行顺序 |
+
+Python 案例的 `after` 保留先 GZIP、后 Base64 的顺序；测试比较重构前后的字节，并独立解码验证原文。功能长期固定时，保留原来的分支也是合理结论。案例随 Skill 安装，可运行但不连接真实业务服务。
+
+[选型参考](skills/design-patterns-refactor/references/pattern-selection.md) 覆盖 GoF 23 种模式及常见领域/架构候选，**不代表已经实现 23 个案例**。[行为评估](evals/scenarios.md) 另提供 Python 清理、事务恢复和消息拓扑的固定输入与评分依据，不把案例测试当成模型能力证明。
+
+## 安装与更新
+
+### 安装到其他位置
+
+在仓库目录执行，参数是 **skills 父目录**：
 
 ```bash
 bash scripts/install.sh /path/to/your-project/.agents/skills
 ```
 
-如宿主环境使用 `~/.codex/skills`，可将该目录作为参数传入。不要在多个扫描位置重复安装同名 Skill。
+若客户端使用 `~/.codex/skills`，可传 `"$HOME/.codex/skills"`。不要在多个扫描位置重复安装。目录发现规则参见 [OpenAI 官方说明](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills)。
 
-这是独立 Skill 目录的安装方式，路径和发现机制参见 [OpenAI 官方说明](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills)。安装后在 Codex 中查看 Skill 列表；没有显示时重启客户端。
+### 通过 skills CLI 安装（可选）
 
-也可以让内置安装器按仓库与路径安装：
+已安装 Node.js/npm 时，也可使用 [skills CLI](https://github.com/vercel-labs/skills)，按提示选择客户端和安装范围：
 
-```text
-$skill-installer
-从 mengxiangsama/design-patterns-refactor 安装 skills/design-patterns-refactor。
+```bash
+npx skills add mengxiangsama/design-patterns-refactor --skill design-patterns-refactor
 ```
 
-## 使用
+默认项目级安装；全局安装加 `--global`。与 Bash 安装方式二选一，避免同名副本。目录使用方式、遥测和隐私选项由第三方 CLI 管理；它支持多个客户端，不代表本 Skill 已完成所有客户端的行为验证。[skills.sh 收录机制](https://skills.sh/docs/faq) 基于 CLI 安装遥测，不是 GitHub Star 数，也不保证收录时效或排名。
 
-**先分析：**
+### 更新 Bash 安装的副本
 
-```text
-$design-patterns-refactor
-分析当前模块中耦合、重复逻辑和扩展问题。
-比较直接简化与设计模式方案，给出代码证据、收益和代价，先不要修改。
+**`git pull` 只更新仓库源码，不会同步更新已经复制安装的 Skill。** 在仓库目录依次执行：
+
+```bash
+git pull --ff-only
+python3 scripts/update.py --check
+python3 scripts/update.py
 ```
 
-**无用代码检查与清理：**
+更新器需要 Python 3.9+ 和 Git，无第三方 Python 依赖。自定义安装位置须在两条更新命令后加同一个 skills 父目录，例如 `"$HOME/.codex/skills"`。Windows 没有 `python3` 命令时可使用 `py -3`。
 
-无用代码专项检查也可以这样使用：
+- `--check` 只检查版本，不写文件；正式更新前将已安装内容与仓库历史逐文件比较。
+- 仅更新可识别且未经自定义修改的副本；新增、修改、缺失文件或符号链接会阻止更新，没有强制覆盖选项。比较时忽略构建/缓存产物（`target`、`__pycache__`、`.DS_Store`），原副本仍完整备份。
+- 原目录备份到 skills 父目录旁的 `skill-backups/`，不放进 skills 扫描目录。激活新目录失败时尝试恢复原目录，并报告错误。
+- 默认检查最近 100 次涉及 Skill 的提交；旧版本可用 `--from-ref <commit-or-tag>` 指定基线，仍须内容完全匹配。未知版本需先人工比较。
 
-```text
-$design-patterns-refactor
-检查 lottery 的无用代码，包括正在使用的方法内部。
-给出数据流、调用入口和副作用证据，先不修改。
-```
-
-确认后可要求：“清理已确认无用的代码，保留有副作用的调用和对外契约，运行相关编译与回归测试。”
-
-**直接重构：**
-
-```text
-$design-patterns-refactor
-重构第三方物流接入，统一内部接口并保留现有错误和单位换算语义。
-直接修改相关代码并运行回归测试。
-```
-
-**生成案例：**
-
-```text
-$design-patterns-refactor
-基于当前导出模块生成重构前后案例，说明是否适合装饰器，
-包含组合顺序、异常处理和可运行测试。
-```
-
-**保持简单：**
-
-```text
-$design-patterns-refactor
-这两个稳定的业务分支是否值得抽象？如果收益不足，请保留直接实现。
-```
-
-## 模式范围
-
-[选型参考](skills/design-patterns-refactor/references/pattern-selection.md) 包含 GoF 23 种模式，以及规格、仓储、领域事件等常见领域/架构候选。每种都说明适用信号和不适用条件。
-
-| 类别 | 模式 |
-| --- | --- |
-| 创建型（5） | 工厂方法、抽象工厂、建造者、原型、单例 |
-| 结构型（7） | 适配器、桥接、组合、装饰器、门面、享元、代理 |
-| 行为型（11） | 责任链、命令、解释器、迭代器、中介者、备忘录、观察者、状态、策略、模板方法、访问者 |
-
-模式清单是选型知识，**不代表仓库已经实现了 23 个可运行案例**。以下三个案例已经提供代码和测试：
-
-| 案例 | 重构方式 | 验证重点 |
-| --- | --- | --- |
-| 会员计价 | 分支 → 策略 + 注册表 | 金额精度、边界输入、重复注册 |
-| 物流接入 | 供应商接口 → 适配器 | 单位、错误映射、副作用调用次数 |
-| 导出处理 | 可选功能分支 → 装饰器 | 压缩/编码组合、顺序、字节一致 |
-
-案例位于 [java-examples](skills/design-patterns-refactor/assets/java-examples/README.md)，随 Skill 一起安装。它们不依赖原来的 design Demo，也不连接真实物流或支付系统。
+通过 skills CLI 安装的版本，使用其更新命令 `npx skills update design-patterns-refactor`，不要混用本仓库的副本更新器。更新前自行保留本地自定义内容；本仓库的保护规则不等于第三方 CLI 的保证。
 
 ## 常见问题
 
-**Go、Python 或 TypeScript 项目能用吗？**
+**安装后找不到？** 检查实际安装目录下是否有 `design-patterns-refactor/SKILL.md`，以及客户端是否扫描该父目录。项目级安装要在对应项目中使用；WSL 与 Windows 的用户目录不是同一个位置。刷新 Skill 列表或新开会话，仍不显示再重启客户端。
 
-可以。工作流不限定语言，应使用目标语言原生的接口、函数、组合和测试工具，而不是照搬 Java 的类层次。当前附带的可运行案例仅为 Java，其他语言的案例与实际使用反馈欢迎贡献。
+**提示目录已存在？** 安装器故意拒绝覆盖，避免丢失修改。不要为了重装直接删除目录；先运行上面的更新检查，或确认是否已经通过其他安装器安装。
 
-**只想分析，会自动改代码吗？**
+**我修改过 Skill，怎么更新？** 更新器会停止，不覆盖。对比仓库新版本与自己的副本，人工合并；或先将自定义版本备份到扫描目录外，再决定是否重新安装。源码本身也须与 Git 提交一致，不能把未提交内容当成正式版本更新。
 
-技能要求分析请求保持只读，明确要求实施时才修改。它是给编码助手的工作指引，不是权限隔离机制；仍需结合宿主环境的权限设置。
+**只想分析，会自动改代码吗？** 指令要求分析请求保持只读、实施请求才修改，但 Skill 不是权限隔离机制，仍需结合客户端权限设置。
 
-**用了就一定更快、更安全吗？**
+**代码会被上传吗？** Skill 本身不内置外部 API 或项目代码上传逻辑；代码访问、模型处理与第三方安装器行为由相应客户端和服务决定。
 
-不会作这样的保证。设计模式不等于性能优化；实际收益需要测试和测量，生成的方案仍需评审。
+**用了就更快、更安全吗？** 不保证。设计模式不等于性能优化，生成方案仍需评审与项目自身的测试；Go/TypeScript 等语言目前没有随包可运行案例。
 
 ## 开发与验证
+
+在仓库根目录执行（macOS/Linux/WSL）：
 
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements-dev.txt
 .venv/bin/python scripts/validate.py
-.venv/bin/python -m unittest discover -s tests -v
+.venv/bin/python -B -m unittest discover -s tests -v
+.venv/bin/python -B -m unittest discover -s skills/design-patterns-refactor/assets/python-examples -v
+.venv/bin/python -B -m unittest discover -s evals/fixtures/python_cleanup -v
+.venv/bin/python -B -m unittest discover -s evals/fixtures/order_delivery -v
 mvn -B -f skills/design-patterns-refactor/assets/java-examples/pom.xml verify
 ```
 
-Java 案例以 Java 8 语法/字节码为目标，构建使用 JDK 17+、Maven 3.8+；Maven 的作用仅是运行案例测试，不是使用 Skill 的必要条件。
+原生 Windows 的虚拟环境 Python 路径为 `.venv\Scripts\python.exe`。Java 案例以 Java 8 字节码为目标，建议用 JDK 17+、Maven 3.8+ 构建；这些不是使用 Skill 的依赖。
 
-CI 执行包结构/链接校验、安装回归和 Java 测试。[行为评估场景](evals/scenarios.md) 用于观察 Skill 在真实请求中的判断，结构校验通过并不证明所有模型都能正确选型。
-
-## 项目结构
-
-```text
-skills/design-patterns-refactor/
-  SKILL.md                 工作流与资源路由
-  agents/openai.yaml       展示名与调用提示
-  references/              选型、Java 注意事项、案例索引
-  assets/                  交付模板和带测试的 Java 案例
-scripts/                   安装与包校验
-tests/                     安装行为回归
-evals/                     模型行为评估场景
-.github/workflows/         自动验证
-```
+CI 检查元数据/本地链接、安装更新、Java/Python 案例及评估夹具基线。订单夹具测试**复现原始故障**，不代表问题已修复；模型行为须单独评估，真实 MQ/生产环境未由这些测试验证。
 
 ## 贡献与许可
 
-欢迎改进文档、提交脱敏使用反馈、完善回归测试或增加其他语言的案例。请先阅读 [贡献指南](CONTRIBUTING.md)，通过 [Issues](https://github.com/mengxiangsama/design-patterns-refactor/issues) 讨论较大的改动，再提交 PR。
+欢迎提供脱敏使用反馈、其他语言案例和有意义的回归测试。阅读 [贡献指南](CONTRIBUTING.md)，在 [Issues](https://github.com/mengxiangsama/design-patterns-refactor/issues) 讨论较大改动；不要提交商业代码、客户信息或凭证。
 
-新增案例时提供问题证据、简化方案、选型理由、Before/After 和行为测试。不要为了凑齐模式数量增加没有实际变化点的示例。修复行为与结构重构应分别说明。
-
-本仓库原创内容使用 [MIT License](LICENSE)；案例依赖保留各自许可证。
+[变更记录](CHANGELOG.md) · [Skill 正文](skills/design-patterns-refactor/SKILL.md) · [MIT License](LICENSE)

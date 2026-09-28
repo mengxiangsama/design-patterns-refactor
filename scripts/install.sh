@@ -21,7 +21,8 @@ if [[ ! -f "$source_dir/SKILL.md" ]]; then
   exit 1
 fi
 if [[ -e "$target_dir" || -L "$target_dir" ]]; then
-  printf '%s\n' "Refusing to overwrite existing skill: $target_dir" >&2
+  printf '%s\n' "Refusing to overwrite existing skill: $target_dir" \
+    'For a copied installation, use python3 scripts/update.py --check with the same destination.' >&2
   exit 1
 fi
 

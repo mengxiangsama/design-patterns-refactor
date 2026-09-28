@@ -28,7 +28,7 @@ Explain the problem, simpler alternatives, and pattern trade-offs. Keep changes 
 
 ## 验证 / Verification
 
-Follow the development commands in [README](README.md). Documentation changes should pass the metadata/local-link validator; installer changes need installation tests; Java example changes need Maven verification. New language examples must document their toolchain and runnable tests without requiring production services.
+Follow the development commands in [README](README.md). Documentation changes should pass the metadata/local-link validator; installer/updater changes need installation and recovery tests; Java/Python example changes need their respective contract tests. New language examples must document their toolchain and runnable tests without requiring production services. Keep raw evaluation tasks separate from scoring criteria; fixture baseline tests are not model evaluations or acceptance tests for a fix.
 
 使用反馈请描述任务、预期行为、实际行为、宿主环境及可公开的最小复现。不要为了提供复现泄露商业代码。
 

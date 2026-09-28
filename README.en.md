@@ -1,18 +1,24 @@
-# Design Patterns Refactor
+# Design Patterns Refactor · Cross-language AI Refactoring Skill
 
 [中文](README.md) | [English](README.en.md)
 
+[![CI](https://github.com/mengxiangsama/design-patterns-refactor/actions/workflows/ci.yml/badge.svg)](https://github.com/mengxiangsama/design-patterns-refactor/actions/workflows/ci.yml) · [MIT License](LICENSE)
+
 **Help AI choose refactorings from real code—not force design patterns onto it.**
 
-A language-agnostic Codex skill for refactoring Java/Spring Boot, Go, Python, TypeScript, and other codebases. Trace real call paths, compare direct simplification with design patterns, and plan or implement scoped changes while preserving behavior.
+A cross-language Codex skill for legacy code refactoring, design pattern selection, dead code cleanup, microservice boundaries, and eventual consistency. Apply it to Java/Spring Boot, Go, Python, TypeScript, and other projects using each language's own functions, interfaces, and composition.
 
-Use it for legacy code refactoring, design pattern selection, dead code cleanup, and microservice boundaries or eventual consistency. Runnable before-and-after examples for Strategy, Adapter, and Decorator are currently in Java; for other languages, follow the target project's idioms. References cover Outbox, Saga, idempotency, and message queue topology when relevant.
+- **Evidence first:** trace call paths, cite code, and explain trade-offs.
+- **Keep simple code simple:** stable branches may need no pattern; analysis stays read-only.
+- **Preserve behavior:** protect errors, money, transactions, ordering, and external side effects; report verification limits.
 
-- Evidence first: cite code locations and explain costs and benefits.
-- No unnecessary abstractions: “no pattern needed” is a valid conclusion.
-- Preserve behavior: distinguish structural changes from bug fixes, and report verification limits.
+Runnable before/after examples currently cover **Java and Python**, not every language, pattern, or model. This is guidance for a coding agent, not a standalone refactoring engine.
+
+[Quick start](#quick-start) · [Use cases](#use-cases) · [Examples](#examples) · [Install and update](#install-and-update) · [FAQ](#faq)
 
 ## Quick start
+
+Run in a terminal. The default destination is `~/.agents/skills/design-patterns-refactor`:
 
 ```bash
 git clone https://github.com/mengxiangsama/design-patterns-refactor.git
@@ -20,72 +26,148 @@ cd design-patterns-refactor
 bash scripts/install.sh
 ```
 
-The installer needs Bash and tar. It defaults to `~/.agents/skills/design-patterns-refactor` and refuses to overwrite an existing installation. On Windows, use Git Bash or WSL. You do not need Java, Maven, or Python just to use the skill.
+Requires Git, Bash, and tar. Using the skill does not require Java, Maven, or Python. On Windows, use Git Bash or WSL in the same environment as your coding agent.
 
-For a project-local installation:
+Then open **the project you want to analyze** in Codex and send:
+
+```text
+$design-patterns-refactor
+Find high-value refactoring opportunities in the current module.
+Compare direct simplification with design patterns, cite code, and explain trade-offs.
+Use the project's language idioms. Do not edit code yet.
+```
+
+## Use cases
+
+**Python / Go / TypeScript: native abstractions, not Java class hierarchies**
+
+```text
+$design-patterns-refactor
+Analyze this Python export module, preferring functions and composition.
+Preserve iteration timing, error propagation, and output format.
+Propose a plan without editing code.
+```
+
+**Dead code: include redundancy inside active methods**
+
+```text
+$design-patterns-refactor
+Clean up confirmed dead code in the current order module, including dead stores
+and redundant conditions. Preserve effectful calls, dynamic entry points, and
+public contracts. Implement the scoped cleanup and run relevant tests.
+```
+
+**Adapters: unify integrations while preserving contracts**
+
+```text
+$design-patterns-refactor
+Refactor the shipping integration behind a common internal interface.
+Preserve error mapping, units, and call counts. Make the changes and run regression tests.
+```
+
+**Microservices: boundaries, distributed transactions, and reliable messaging**
+
+```text
+$design-patterns-refactor
+Review the order and inventory services' boundaries and message consistency.
+Inspect commits, delivery, idempotency, retries, and compensation. Compare local
+transactions, Outbox, or Saga using the provided repositories.
+Give a design and verification plan. Do not edit or deploy yet.
+```
+
+Relevant tasks can cover service splits/merges, data ownership, Outbox/Saga/TCC, reconciliation, consumer groups, ordering, dead letters, and replay. Specify accessible repositories, participating services, and business constraints. Kubernetes, gateway or monitoring operations, and guessing hidden repositories are outside scope.
+
+## Examples
+
+An export pipeline supports plain text, compression, encoding, or compression followed by encoding. The repository demonstrates both Java decorators and Python function composition, not one structure imposed on every language.
+
+| Example | Refactoring choice | Included tests |
+| --- | --- | --- |
+| [Java pricing](skills/design-patterns-refactor/assets/java-examples/src/main/java/examples/PricingCase.java) | Independently changing rules → strategies and registry | Precision, boundary inputs, duplicate registration |
+| [Java shipping](skills/design-patterns-refactor/assets/java-examples/src/main/java/examples/ShippingCase.java) | Vendor interface → adapter | Units, errors, side-effect call counts |
+| [Java export](skills/design-patterns-refactor/assets/java-examples/src/main/java/examples/ExportCase.java) | Optional processing → decorators | Order, byte equality, decoding |
+| [Python export](skills/design-patterns-refactor/assets/python-examples/README.md) | Optional processing → plain function sequence | Four combinations, single-pass iteration, exceptions, order |
+
+The Python `after` implementation preserves GZIP-before-Base64 ordering. Tests compare before/after bytes and independently decode the result. Keeping the original branches remains reasonable when the feature set is stable. Examples ship with the skill and do not connect to real business services.
+
+The [selection guide](skills/design-patterns-refactor/references/pattern-selection.md) covers the 23 GoF patterns and selected architectural approaches; **it does not provide 23 implementations**. Separate [behavioral evaluation scenarios](evals/scenarios.md) include fixed Python cleanup, transaction recovery, and message-topology inputs. Passing example tests is not evidence of general model quality.
+
+## Install and update
+
+### Choose another location
+
+From the cloned repository, pass the **parent skills directory**:
 
 ```bash
 bash scripts/install.sh /path/to/your-project/.agents/skills
 ```
 
-If your host uses `~/.codex/skills`, pass that directory instead. Avoid duplicate installations in scanned locations. Check the skill list after installation and restart the client if it is not visible.
+If your host uses `~/.codex/skills`, pass `"$HOME/.codex/skills"`. Avoid duplicate installations in scanned locations. See [official OpenAI discovery documentation](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills).
 
-## Usage
+### Optional skills CLI installation
 
-Analyze without editing:
+With Node.js/npm installed, use the third-party [skills CLI](https://github.com/vercel-labs/skills) and select your agent and scope:
 
-```text
-$design-patterns-refactor
-Find high-value refactoring opportunities in this project.
-Compare direct simplification with design-pattern alternatives.
-Cite code evidence, explain trade-offs, and prioritize recommendations. Do not edit code yet.
+```bash
+npx skills add mengxiangsama/design-patterns-refactor --skill design-patterns-refactor
 ```
 
-Implement a scoped change:
+The default is project scope; add `--global` for a user-wide installation. Choose either this method or the Bash installer, not duplicate copies. Installation paths, telemetry, and privacy controls belong to that CLI. Its support for multiple agents is not a compatibility certification for this skill. [skills.sh discovery](https://skills.sh/docs/faq) uses CLI installation telemetry, not GitHub stars; inclusion timing and ranking are not guaranteed.
 
-```text
-$design-patterns-refactor
-Refactor the shipping integration behind a common internal interface.
-Preserve error handling, units, and external side effects. Run relevant regression tests.
+### Update a Bash-installed copy
+
+**`git pull` updates the repository, not an already copied skill installation.** From the repository, run:
+
+```bash
+git pull --ff-only
+python3 scripts/update.py --check
+python3 scripts/update.py
 ```
 
-Use language-native abstractions:
+The updater requires Python 3.9+ and Git, with no third-party Python packages. For a custom destination, append the same skills parent directory to both update commands, such as `"$HOME/.codex/skills"`. On Windows, use `py -3` if `python3` is unavailable.
 
-```text
-$design-patterns-refactor
-Analyze this Go module using idiomatic Go interfaces, functions, and composition.
-Preserve context cancellation, errors, and concurrency behavior.
-Do not copy Java-style class hierarchies. Propose a plan before editing.
-```
+- `--check` identifies versions without writing files; an actual update compares installed files against repository history.
+- Only recognized, unmodified copies can be updated. Added, edited, missing files or symlinks block updates; there is no force-overwrite option. Comparisons ignore generated `target`, `__pycache__`, and `.DS_Store` entries, but the original copy is backed up in full.
+- The old directory is backed up under `skill-backups/` alongside the skills directory, outside skill scanning. If activation fails, restoration is attempted and the error is reported.
+- The default search covers the latest 100 commits touching the skill. Use `--from-ref <commit-or-tag>` for an older baseline; contents must still match exactly. Unknown versions require manual comparison.
 
-## Scope and limits
+For CLI-managed installations, use `npx skills update design-patterns-refactor`, not this repository's copy updater. Preserve customizations before using third-party update tools; their safety behavior is separate from this updater's guarantees.
 
-The skill also checks unused symbols and redundant code inside active methods, including dead stores, unused computations, and unreachable branches. Analysis is read-only; cleanup requires a request to change code. Preserve side effects, dynamic entry points, and public contracts; uncertain candidates remain for review. Simple cleanup does not require a design pattern.
+## FAQ
 
-The workflow is language-agnostic. The bundled executable examples currently use Java; Go, Python, and TypeScript examples are not yet included.
+**Installed but not visible?** Check that the installation contains `design-patterns-refactor/SKILL.md` and that your client scans its parent directory. Open the matching project for project-local installs. Windows and WSL home directories differ. Refresh the skill list or start a new session; restart the client if needed.
 
-The [selection guide](skills/design-patterns-refactor/references/pattern-selection.md) covers the 23 GoF patterns and selected architectural approaches. This is guidance, not a claim that all patterns have executable examples. Three examples are provided: pricing strategies, shipping adapters, and export decorators. See [example documentation](skills/design-patterns-refactor/assets/java-examples/README.md).
+**Directory already exists?** The installer intentionally refuses to overwrite it. Do not delete it just to reinstall. Run the update check above or determine whether another installer manages it.
 
-Analysis requests should remain read-only. Implementation requires a request to make changes. These are agent instructions, not a security boundary. The skill has no built-in external API calls or automatic project-code upload; code access and model processing depend on your host environment.
+**I customized the skill. How do I update?** The updater stops instead of overwriting. Compare and merge your changes, or preserve your copy outside scanned paths before deciding to reinstall. The repository's skill source must also match its Git commit; uncommitted source is not treated as a released version.
 
-Patterns do not guarantee performance, correctness, or security. Review changes and validate behavior with relevant tests and measurements.
+**Will analysis edit my code?** Instructions require read-only analysis unless implementation is requested. A skill is not a security boundary; configure your host permissions appropriately.
+
+**Does it upload my code?** The skill has no built-in external API or project-code upload logic. Code access, model processing, and third-party installer behavior depend on the respective client or service.
+
+**Does it guarantee speed or safety?** No. Patterns are not performance optimizations by themselves. Review generated changes and run project-specific tests. Runnable Go/TypeScript examples are not yet bundled.
 
 ## Development and verification
+
+From the repository root (macOS/Linux/WSL):
 
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements-dev.txt
 .venv/bin/python scripts/validate.py
-.venv/bin/python -m unittest discover -s tests -v
+.venv/bin/python -B -m unittest discover -s tests -v
+.venv/bin/python -B -m unittest discover -s skills/design-patterns-refactor/assets/python-examples -v
+.venv/bin/python -B -m unittest discover -s evals/fixtures/python_cleanup -v
+.venv/bin/python -B -m unittest discover -s evals/fixtures/order_delivery -v
 mvn -B -f skills/design-patterns-refactor/assets/java-examples/pom.xml verify
 ```
 
-Java examples target Java 8 syntax/bytecode; building them requires JDK 17+ and Maven 3.8+. These dependencies are for example tests, not skill usage.
+On native Windows, the virtual environment Python is `.venv\Scripts\python.exe`. Java examples target Java 8 bytecode; JDK 17+ and Maven 3.8+ are recommended for building. These are not skill-usage dependencies.
 
-CI checks package metadata, local links, installation behavior, and Java examples. Passing these checks does not establish model behavior quality. [Evaluation scenarios](evals/scenarios.md) support manual behavioral evaluation.
+CI checks metadata/local links, install/update behavior, Java/Python examples, and evaluation fixture baselines. Order-delivery baseline tests deliberately **reproduce original failures**, not a completed fix. Model behavior needs separate evaluation; these tests do not validate a real MQ cluster or production environment.
 
-## Contributing
+## Contributing and license
 
-Documentation fixes, sanitized usage feedback, regression tests, and language-native examples are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), discuss substantial changes in [Issues](https://github.com/mengxiangsama/design-patterns-refactor/issues), and submit a focused PR.
+Sanitized feedback, language-native examples, and meaningful regression tests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) and discuss substantial changes in [Issues](https://github.com/mengxiangsama/design-patterns-refactor/issues). Never submit confidential code, customer information, or credentials.
 
-[Changelog](CHANGELOG.md) · [MIT License](LICENSE)
+[Changelog](CHANGELOG.md) · [Skill instructions](skills/design-patterns-refactor/SKILL.md) · [MIT License](LICENSE)
