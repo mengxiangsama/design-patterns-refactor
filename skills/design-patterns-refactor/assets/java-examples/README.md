@@ -8,6 +8,8 @@ mvn -B -f skills/design-patterns-refactor/assets/java-examples/pom.xml verify
 
 也可以进入本目录执行 `mvn verify`。测试使用 JUnit 5，不启动 Spring、不访问外部服务。
 
+`verify` 会在测试后检查依赖声明。JUnit API 和参数化测试模块由测试代码直接使用，JUnit Engine 由 Surefire 在运行时发现。POM 只为这个测试引擎声明字节码检测例外。见 [Maven 检测与清理](../../references/maven-cleanup.md)。
+
 - [PricingCase](src/main/java/examples/PricingCase.java)：策略将独立计价规则分开，注册表只负责选择；若只有两个长期稳定的规则，Before 也完全合理。
 - [ShippingCase](src/main/java/examples/ShippingCase.java)：适配器将供应商克数/错误码转换为业务千克/运单结果；供应商是注入的测试桩。
 - [ExportCase](src/main/java/examples/ExportCase.java)：装饰器组合 GZIP 和 Base64。使用者显式决定顺序。

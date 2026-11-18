@@ -57,6 +57,17 @@ and redundant conditions. Preserve effectful calls, dynamic entry points, and
 public contracts. Implement the scoped cleanup and run relevant tests.
 ```
 
+**Maven: detect and remove unused dependencies and build settings**
+
+```text
+$design-patterns-refactor
+Inspect the active Maven profiles, dependency tree, and POM of the current module.
+Check runtime loading and test engines, remove confirmed unused dependencies,
+plugin settings and properties, and run verify for the affected build.
+```
+
+The [Maven cleanup guide](skills/design-patterns-refactor/references/maven-cleanup.md) covers the commands and runtime checks. The Java examples also check dependency declarations during `verify`.
+
 **Adapters: unify integrations while preserving contracts**
 
 ```text

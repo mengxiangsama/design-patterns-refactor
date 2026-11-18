@@ -15,6 +15,8 @@ This file records repository changes. `Unreleased` is not a published release.
 
 ### Skill and validation
 
+- Added Maven dependency and POM cleanup guidance covering effective configuration, runtime dependency checks, and build verification.
+- Enabled dependency analysis in the Java example's Maven verification and declared the JUnit modules it uses explicitly.
 - Clarified language-native refactoring choices and removed project-specific Java assumptions.
 - Added a standard-library Python function-composition example and contract tests.
 - Added isolated evaluation tasks for Python analysis/cleanup, durable event delivery, consumer idempotency, and message topology. Inputs are separated from scoring guidance.
