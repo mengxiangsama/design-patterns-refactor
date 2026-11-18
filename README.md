@@ -28,13 +28,14 @@ bash scripts/install.sh
 
 需要 Git、Bash 和 tar；仅使用 Skill 不需要 Java、Maven 或 Python。Windows 可用 Git Bash 或 WSL，但应安装在实际运行编码助手的环境中。
 
-然后在 Codex 中打开**你要分析的项目**，发送：
+在 Codex 中打开**你的业务项目**，主动选择或 @ 此 Skill，也可以用 `$design-patterns-refactor` 显式调用。普通对话不会自动加载它。
 
 ```text
 $design-patterns-refactor
-分析当前模块的高价值重构点，比较直接简化与设计模式方案。
-给出代码证据、收益和代价，遵循项目语言的惯用写法。先不要修改代码。
+要一个商品更新同步
 ```
+
+也可以只说「我要订单超时的方案」。Skill 会先查当前项目和相关组件，按需检索公开方案，再比较并推荐一套设计。例如，项目已有延时 MQ 且需要接近到期时关单，候选方案包括延时消息触发和定时任务补漏。[业务设计方案库](skills/design-patterns-refactor/references/public-designs.md)收录做法、适用条件和故障验证点。另见[业务需求与架构选型](skills/design-patterns-refactor/references/business-architecture.md)和[组件手册](https://github.com/mengxiangsama/middleware-component-lab)。
 
 ## 使用场景
 
@@ -83,6 +84,16 @@ $design-patterns-refactor
 ```
 
 跨服务任务按需覆盖拆分/合并、数据归属、Outbox/Saga/TCC、对账补偿，以及消费组、顺序、死信和重放。请指定可访问仓库、参与服务与业务约束；不包含 Kubernetes、网关或监控平台运维，也不推断隐藏仓库的实现。
+
+**Maven：检测并清理无用依赖和构建配置**
+
+```text
+$design-patterns-refactor
+检查当前 Maven 模块实际启用的 profile、依赖树和 POM。
+核对运行时加载及测试引擎，删除已确认无用的依赖、插件配置和属性，然后执行相关 verify。
+```
+
+[Maven 检测与清理](skills/design-patterns-refactor/references/maven-cleanup.md)包含检测命令和运行时用途核查。Java 示例的 `verify` 也会检查依赖声明。
 
 ## 实际案例
 

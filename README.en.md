@@ -28,14 +28,14 @@ bash scripts/install.sh
 
 Requires Git, Bash, and tar. Using the skill does not require Java, Maven, or Python. On Windows, use Git Bash or WSL in the same environment as your coding agent.
 
-Then open **the project you want to analyze** in Codex and send:
+Open **your project** in Codex and select the skill explicitly, or invoke it with `$design-patterns-refactor`. It is loaded on explicit invocation.
 
 ```text
 $design-patterns-refactor
-Find high-value refactoring opportunities in the current module.
-Compare direct simplification with design patterns, cite code, and explain trade-offs.
-Use the project's language idioms. Do not edit code yet.
+I need product updates to sync.
 ```
+
+You can also ask for an order timeout design. The skill inspects the current project, consults the middleware catalog, and looks up published designs when useful. It compares options before recommending one. For example, when the project already has delayed delivery and needs to close orders near their deadlines, it can evaluate delayed messages with a scheduled recovery sweep. The [design catalog](skills/design-patterns-refactor/references/public-designs.md) captures reusable approaches, trade-offs, and failure checks. See also the [business requirements guide](skills/design-patterns-refactor/references/business-architecture.md) and the [middleware catalog](https://github.com/mengxiangsama/middleware-component-lab).
 
 ## Use cases
 
@@ -90,6 +90,17 @@ Give a design and verification plan. Do not edit or deploy yet.
 ```
 
 Relevant tasks can cover service splits/merges, data ownership, Outbox/Saga/TCC, reconciliation, consumer groups, ordering, dead letters, and replay. Specify accessible repositories, participating services, and business constraints. Kubernetes, gateway or monitoring operations, and guessing hidden repositories are outside scope.
+
+**Maven: detect and remove unused dependencies and build settings**
+
+```text
+$design-patterns-refactor
+Inspect the active Maven profiles, dependency tree, and POM of the current module.
+Check runtime loading and test engines, remove confirmed unused dependencies,
+plugin settings and properties, and run verify for the affected build.
+```
+
+The [Maven cleanup guide](skills/design-patterns-refactor/references/maven-cleanup.md) covers the commands and runtime checks. The Java examples also check dependency declarations during `verify`.
 
 ## Examples
 
