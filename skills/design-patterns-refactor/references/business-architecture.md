@@ -8,11 +8,13 @@
 - 查构建依赖、应用配置、数据库迁移、消息定义、现有连接器、测试及可访问的发布资料。区分代码依赖、本地示例、指定环境的配置和已验证的部署；分别记录组件、版本和证据范围。
 - 从需求和现有行为提取目标、时效、顺序、失败后的可见结果与恢复窗口。对结论有影响、又无法从项目查到的缺口才问少量具体问题，例如同步给谁、最多允许延迟多久。先按已知事实和清楚标注的假设给有条件的方案。缺少业务仓库时说明范围，以业务假设继续设计。
 
-## 2. 查与需求相关的组件资料
+## 2. 查与需求相关的组件和公开方案
 
 用户指定的资料优先。默认浏览 [middleware-component-lab 组件目录](https://github.com/mengxiangsama/middleware-component-lab/blob/main/docs/components/README.md)，再读取相关章节。例如 [CDC 与数据管道](https://github.com/mengxiangsama/middleware-component-lab/blob/main/docs/components/data-pipelines.md)、[消息组件](https://github.com/mengxiangsama/middleware-component-lab/blob/main/docs/components/messaging.md)、[搜索与缓存](https://github.com/mengxiangsama/middleware-component-lab/blob/main/docs/components/search-cache.md) 或 [任务调度](https://github.com/mengxiangsama/middleware-component-lab/blob/main/docs/components/scheduling.md)。只读与备选方案有关的资料。
 
 组件目录用于补全候选和关键验证点。是否采用看项目证据和用户约束。涉及版本、连接器、事务、确认、顺序或兼容性时，核对目标版本的官方文档。读取资料与代码用于评估，按当前授权操作。目录离线时，继续用项目证据给方案，标明尚待核实的配置和保证。
+
+需要比较已知做法或验证关键假设时，先查 [公开方案与工程资料索引](public-designs.md)，再按业务场景和失败问题搜索官方文档、原始论文或实施团队的一手案例。外部搜索使用通用场景与公开术语。对有影响的资料记录原始链接、适用前提、版本或环境、故障边界，以及能迁移到当前项目的部分。把外部经验和项目已验证事实分别写清。用户要求收集时，在交付中附可复用的来源与取舍摘要，按用户指定位置保存。
 
 ## 3. 比较后交付推荐
 

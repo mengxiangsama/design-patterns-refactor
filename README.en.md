@@ -35,7 +35,7 @@ $design-patterns-refactor
 I need product updates to sync.
 ```
 
-You can also ask for an order timeout design. The skill inspects the current project and consults the [middleware catalog](https://github.com/mengxiangsama/middleware-component-lab) for relevant options before recommending one. For example, when the project already has delayed delivery and needs to close orders near their deadlines, the skill can evaluate delayed messages with a scheduled recovery sweep. See the [business requirements guide](skills/design-patterns-refactor/references/business-architecture.md).
+You can also ask for an order timeout design. The skill inspects the current project, consults the middleware catalog, and looks up published designs when useful. It compares options before recommending one. For example, when the project already has delayed delivery and needs to close orders near their deadlines, it can evaluate delayed messages with a scheduled recovery sweep. See the [business requirements guide](skills/design-patterns-refactor/references/business-architecture.md), [middleware catalog](https://github.com/mengxiangsama/middleware-component-lab), and [public design references](skills/design-patterns-refactor/references/public-designs.md).
 
 ## Use cases
 
