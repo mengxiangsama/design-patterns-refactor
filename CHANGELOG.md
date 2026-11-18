@@ -25,6 +25,7 @@ This file records repository changes. `Unreleased` is not a published release.
 - Enabled dependency analysis in the Java example's Maven verification and declared the JUnit modules it uses explicitly.
 - Added architecture proposals from short business requests, with project inspection, middleware references, and a recommended option. Configured explicit invocation in Codex.
 - Curated public design references for search synchronization, timeout processing, and reliable event delivery, with guidance for evaluating applicability.
+- Condensed design references into a reusable catalog of approaches, trade-offs, and verification steps.
 
 ### Installation
 

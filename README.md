@@ -35,7 +35,7 @@ $design-patterns-refactor
 要一个商品更新同步
 ```
 
-也可以只说「我要订单超时的方案」。Skill 会先查当前项目和相关组件，按需检索公开方案，再比较并推荐一套设计。例如，项目已有延时 MQ 且需要接近到期时关单，候选方案包括延时消息触发和定时任务补漏。见[业务需求与架构选型](skills/design-patterns-refactor/references/business-architecture.md)、[组件手册](https://github.com/mengxiangsama/middleware-component-lab)和[公开方案与工程资料](skills/design-patterns-refactor/references/public-designs.md)。
+也可以只说「我要订单超时的方案」。Skill 会先查当前项目和相关组件，按需检索公开方案，再比较并推荐一套设计。例如，项目已有延时 MQ 且需要接近到期时关单，候选方案包括延时消息触发和定时任务补漏。[业务设计方案库](skills/design-patterns-refactor/references/public-designs.md)收录做法、适用条件和故障验证点。另见[业务需求与架构选型](skills/design-patterns-refactor/references/business-architecture.md)和[组件手册](https://github.com/mengxiangsama/middleware-component-lab)。
 
 ## 使用场景
 
