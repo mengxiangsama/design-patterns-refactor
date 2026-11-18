@@ -31,8 +31,6 @@ description: 根据实际代码选择设计模式或直接简化，实施遗留�
 
 “检查、分析、找出”默认只报告；明确要求清理、删除或实施优化时才修改。以数据流、可达性和副作用为依据，不把搜索无引用、覆盖率为零或返回值未使用当作可删除证明。无法证明行为不变的候选保留并标为待确认。
 
-涉及 Maven 依赖或 POM 清理时，读 [Maven 检测与清理](references/maven-cleanup.md)。根据实际构建的模块和 profile 查有效 POM、依赖树及字节码分析。确认配置、运行时和下游用途后，清理已证实无用的依赖、插件配置与属性，并重跑受影响的构建。
-
 ## 跨微服务分析与改造
 
 覆盖服务拆分/合并判断、分布式事务方案、数据库最终一致性，以及消息队列逻辑拓扑和应用侧实现。按请求选择下方专项参考，不因普通单服务重构加载它们。明确可访问仓库、参与服务、数据归属和业务不变量；区分代码证据、运行证据与待验证假设。缺少信息时先完成已有证据支持的方案，标明影响选型的未知条件。
@@ -55,12 +53,14 @@ description: 根据实际代码选择设计模式或直接简化，实施遗留�
 
 性能声明需要同负载下的测量；少写分支、增加接口或应用设计模式本身不证明更快。
 
+涉及 Maven 依赖或 POM 清理时，读 [Maven 检测与清理](references/maven-cleanup.md)。根据实际构建的模块和 profile 查有效 POM、依赖树及字节码分析。确认配置、运行时和下游用途后，清理已证实无用的依赖、插件配置与属性，并重跑受影响的构建。
+
 ## 资源路由
 
 - [无用代码清理](references/dead-code-cleanup.md)：检查或删除未使用代码、方法内无效赋值和冗余逻辑时读。
+- [Maven 检测与清理](references/maven-cleanup.md)：使用 Maven 的项目需要清理依赖或 POM 时读。
 - [模式选型参考](references/pattern-selection.md)：选型或比较模式时读相关类别。
 - [Java 与 Spring 注意事项](references/java-spring.md)：只在 Java/Spring 重构时读。
-- [Maven 检测与清理](references/maven-cleanup.md)：使用 Maven 的项目需要清理依赖或 POM 时读。
 - [行为基线与依赖隔离](references/behavior-and-dependencies.md)：缺少回归测试，或网络、时间、数据库等依赖使测试难以执行时读；优先复用已有替换入口。
 - [契约与事件迁移](references/contract-and-event-migration.md)：改变错误表示、调用顺序或将直接调用迁移为事件时读；不默认引入异步或 MQ。
 - [可运行案例](references/examples.md)：需要重构前后代码或讲解扩展点时读对应的 Java/Python 案例；均随 Skill 安装，不把教学实现当生产组件。
