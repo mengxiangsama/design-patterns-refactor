@@ -1,6 +1,7 @@
 # Java / Spring 按需注意事项
 
 - 读取真实 pom/Gradle 配置及 wrapper；Java 编译目标不代表当前运行 JDK。不要因为重构顺手升级 Boot、Jakarta 包名或全仓依赖。
+- Maven 依赖、插件及 POM 清理见 [Maven 检测与清理](maven-cleanup.md)。Spring Starter、自动配置和运行时驱动结合启动或集成测试验证。
 - 注册器可用构造注入及实例级只读 Map。若“重复 key 覆盖”是历史可见行为，将启动失败的变化单独列出。只读 Map 不代表内部服务自动线程安全。
 - 不能因为类名是 Factory/Handler/Abstract 就判定模式。模板方法要有稳定步骤骨架；Map<Integer, Consumer> 更接近动作分发。
 - 若引用方法被事务/缓存/AOP 包装，检查自调用、private/final 方法、代理对象绑定以及事务传播。抽方法或改继承关系可能改变切面是否生效。

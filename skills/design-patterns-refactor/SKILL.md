@@ -53,9 +53,12 @@ description: 根据实际代码选择设计模式或直接简化，实施遗留�
 
 性能声明需要同负载下的测量；少写分支、增加接口或应用设计模式本身不证明更快。
 
+涉及 Maven 依赖或 POM 清理时，读 [Maven 检测与清理](references/maven-cleanup.md)。根据实际构建的模块和 profile 查有效 POM、依赖树及字节码分析。确认配置、运行时和下游用途后，清理已证实无用的依赖、插件配置与属性，并重跑受影响的构建。
+
 ## 资源路由
 
 - [无用代码清理](references/dead-code-cleanup.md)：检查或删除未使用代码、方法内无效赋值和冗余逻辑时读。
+- [Maven 检测与清理](references/maven-cleanup.md)：使用 Maven 的项目需要清理依赖或 POM 时读。
 - [模式选型参考](references/pattern-selection.md)：选型或比较模式时读相关类别。
 - [Java 与 Spring 注意事项](references/java-spring.md)：只在 Java/Spring 重构时读。
 - [行为基线与依赖隔离](references/behavior-and-dependencies.md)：缺少回归测试，或网络、时间、数据库等依赖使测试难以执行时读；优先复用已有替换入口。

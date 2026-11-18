@@ -21,6 +21,9 @@ This file records repository changes. `Unreleased` is not a published release.
 - Added fixture baseline checks to CI; these do not establish model quality or production correctness.
 - Explicitly close reopened SQLite connections in baseline tests so Windows can remove temporary databases; the original-failure assertions are unchanged.
 
+- Added Maven dependency and POM cleanup guidance covering effective configuration, runtime dependency checks, and build verification.
+- Enabled dependency analysis in the Java example's Maven verification and declared the JUnit modules it uses explicitly.
+
 ### Installation
 
 - Added a Git-history-based copy updater with read-only checks, local-change refusal, backups outside skill scanning, and restoration on activation failure.

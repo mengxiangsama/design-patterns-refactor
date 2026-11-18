@@ -77,6 +77,17 @@ Give a design and verification plan. Do not edit or deploy yet.
 
 Relevant tasks can cover service splits/merges, data ownership, Outbox/Saga/TCC, reconciliation, consumer groups, ordering, dead letters, and replay. Specify accessible repositories, participating services, and business constraints. Kubernetes, gateway or monitoring operations, and guessing hidden repositories are outside scope.
 
+**Maven: detect and remove unused dependencies and build settings**
+
+```text
+$design-patterns-refactor
+Inspect the active Maven profiles, dependency tree, and POM of the current module.
+Check runtime loading and test engines, remove confirmed unused dependencies,
+plugin settings and properties, and run verify for the affected build.
+```
+
+The [Maven cleanup guide](skills/design-patterns-refactor/references/maven-cleanup.md) covers the commands and runtime checks. The Java examples also check dependency declarations during `verify`.
+
 ## Examples
 
 An export pipeline supports plain text, compression, encoding, or compression followed by encoding. The repository demonstrates both Java decorators and Python function composition, not one structure imposed on every language.

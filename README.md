@@ -73,6 +73,16 @@ $design-patterns-refactor
 
 跨服务任务按需覆盖拆分/合并、数据归属、Outbox/Saga/TCC、对账补偿，以及消费组、顺序、死信和重放。请指定可访问仓库、参与服务与业务约束；不包含 Kubernetes、网关或监控平台运维，也不推断隐藏仓库的实现。
 
+**Maven：检测并清理无用依赖和构建配置**
+
+```text
+$design-patterns-refactor
+检查当前 Maven 模块实际启用的 profile、依赖树和 POM。
+核对运行时加载及测试引擎，删除已确认无用的依赖、插件配置和属性，然后执行相关 verify。
+```
+
+[Maven 检测与清理](skills/design-patterns-refactor/references/maven-cleanup.md)包含检测命令和运行时用途核查。Java 示例的 `verify` 也会检查依赖声明。
+
 ## 实际案例
 
 导出需要支持“原文、压缩、编码、压缩后编码”四种组合。这里既有 Java 装饰器，也有 Python 函数组合，不要求不同语言使用相同结构。
