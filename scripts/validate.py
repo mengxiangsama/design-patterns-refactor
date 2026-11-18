@@ -29,8 +29,13 @@ def validate(root):
     description = metadata.get("description")
     if not isinstance(description, str) or not description.strip() or len(description) > 1024:
         errors.append("Invalid description")
-    interface = yaml.safe_load((skill / "agents" / "openai.yaml").read_text(encoding="utf-8"))
-    interface = interface.get("interface", {})
+    agent = yaml.safe_load((skill / "agents" / "openai.yaml").read_text(encoding="utf-8"))
+    if not isinstance(agent, dict):
+        return ["Agent configuration must be a mapping"]
+    policy = agent.get("policy", {})
+    if not isinstance(policy, dict) or policy.get("allow_implicit_invocation") is not False:
+        errors.append("This skill must require explicit invocation")
+    interface = agent.get("interface", {})
     if "$design-patterns-refactor" not in interface.get("default_prompt", ""):
         errors.append("default_prompt must invoke this skill")
     if not 25 <= len(interface.get("short_description", "")) <= 64:

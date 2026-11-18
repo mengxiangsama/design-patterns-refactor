@@ -28,13 +28,14 @@ bash scripts/install.sh
 
 需要 Git、Bash 和 tar；仅使用 Skill 不需要 Java、Maven 或 Python。Windows 可用 Git Bash 或 WSL，但应安装在实际运行编码助手的环境中。
 
-然后在 Codex 中打开**你要分析的项目**，发送：
+在 Codex 中打开**你的业务项目**，主动选择或 @ 此 Skill，也可以用 `$design-patterns-refactor` 显式调用。普通对话不会自动加载它。
 
 ```text
 $design-patterns-refactor
-分析当前模块的高价值重构点，比较直接简化与设计模式方案。
-给出代码证据、收益和代价，遵循项目语言的惯用写法。先不要修改代码。
+要一个商品更新同步
 ```
+
+也可以只说「我要订单超时的方案」。这类请求会先查当前项目和相关[组件手册](https://github.com/mengxiangsama/middleware-component-lab)，再比较并推荐一套方案。例如，项目已有延时 MQ 且需要接近到期时关单，候选方案包括延时消息触发和定时任务补漏。见[业务需求与架构选型](skills/design-patterns-refactor/references/business-architecture.md)。
 
 ## 使用场景
 

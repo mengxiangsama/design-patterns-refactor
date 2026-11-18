@@ -23,6 +23,7 @@ This file records repository changes. `Unreleased` is not a published release.
 
 - Added Maven dependency and POM cleanup guidance covering effective configuration, runtime dependency checks, and build verification.
 - Enabled dependency analysis in the Java example's Maven verification and declared the JUnit modules it uses explicitly.
+- Added architecture proposals from short business requests, with project inspection, middleware references, and a recommended option. Configured explicit invocation in Codex.
 
 ### Installation
 
