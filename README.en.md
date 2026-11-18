@@ -28,14 +28,14 @@ bash scripts/install.sh
 
 Requires Git, Bash, and tar. Using the skill does not require Java, Maven, or Python. On Windows, use Git Bash or WSL in the same environment as your coding agent.
 
-Then open **the project you want to analyze** in Codex and send:
+Open **your project** in Codex and select the skill explicitly, or invoke it with `$design-patterns-refactor`. It is loaded on explicit invocation.
 
 ```text
 $design-patterns-refactor
-Find high-value refactoring opportunities in the current module.
-Compare direct simplification with design patterns, cite code, and explain trade-offs.
-Use the project's language idioms. Do not edit code yet.
+I need product updates to sync.
 ```
+
+You can also ask for an order timeout design. The skill inspects the current project, consults the middleware catalog, and looks up published designs when useful. It compares options before recommending one. For example, when the project already has delayed delivery and needs to close orders near their deadlines, it can evaluate delayed messages with a scheduled recovery sweep. See the [business requirements guide](skills/design-patterns-refactor/references/business-architecture.md), [middleware catalog](https://github.com/mengxiangsama/middleware-component-lab), and [public design references](skills/design-patterns-refactor/references/public-designs.md).
 
 ## Use cases
 
