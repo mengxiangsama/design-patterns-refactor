@@ -52,10 +52,24 @@ Propose a plan without editing code.
 
 ```text
 $design-patterns-refactor
-Clean up confirmed dead code in the current order module, including dead stores
-and redundant conditions. Preserve effectful calls, dynamic entry points, and
-public contracts. Implement the scoped cleanup and run relevant tests.
+Clean up confirmed unused variables, imports, dead stores, and redundant conditions
+in the current order module. Preserve effectful calls, dynamic entry points, and
+public contracts. Apply the project's formatting, implement the scoped cleanup,
+and run relevant tests.
 ```
+
+**Go: idiomatic structure and tidy code**
+
+```text
+$design-patterns-refactor
+Refactor the current Go module using functions, small interfaces, and composition.
+Preserve error handling and resource cleanup. Remove confirmed unused variables,
+assignments, and imports; preserve initialization imports and required calls.
+Do not hide errors with _. Follow project naming and structure, run gofmt,
+and execute relevant tests and static checks.
+```
+
+The [Go refactoring guide](skills/design-patterns-refactor/references/go.md) provides language-specific rules. The shared implementation workflow also removes proven redundancy introduced or encountered within the change's scope and follows project formatting for indentation, spacing, and imports. The guide ships with the skill; runnable Go examples are not yet bundled.
 
 **Adapters: unify integrations while preserving contracts**
 
