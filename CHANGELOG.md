@@ -15,6 +15,8 @@ This file records repository changes. `Unreleased` is not a published release.
 
 ### Skill and validation
 
+- Added Go refactoring guidance for native abstractions, variable/import cleanup, formatting, and behavior-preserving verification, with matching Chinese/English usage prompts.
+- Made scoped unused-variable/import cleanup and consistent code formatting explicit implementation requirements; preserve effectful evaluation and initialization imports.
 - Clarified language-native refactoring choices and removed project-specific Java assumptions.
 - Added a standard-library Python function-composition example and contract tests.
 - Added isolated evaluation tasks for Python analysis/cleanup, durable event delivery, consumer idempotency, and message topology. Inputs are separated from scoring guidance.
